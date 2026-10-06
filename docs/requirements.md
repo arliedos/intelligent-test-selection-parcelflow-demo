@@ -12,6 +12,7 @@
 | REQ-VALID-2 | Unknown fields in request bodies are rejected. | Strict shape validation. |
 | REQ-CONFIG-1 | Configuration documents are validated for known environment name, known role names, and non-negative integer gateway timeout/retry values. | `config.py` |
 | REQ-SEC-1 | Secret reference values must never appear in error messages or logs. | Enforced by `config.py` validation errors and `app.py` error handlers. |
+| REQ-UI-1 | The quote form's service selector lists all roles' available services identically; the role selector does not affect which services are offered. | Originally captured for a role-agnostic storefront design; conflicts with the role-based EXPRESS visibility restriction described in `docs/journeys.md` J5 below. Not reconciled -- kept as realistic conflicting requirement evidence. |
 
 These are baseline, non-exhaustive requirements -- sufficient to exercise
 change-impact analysis across the scenario branches, not a claim of full

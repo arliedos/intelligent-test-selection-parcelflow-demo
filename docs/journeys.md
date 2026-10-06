@@ -44,3 +44,20 @@ Covered by: `tests/test_pricing.py::PricingTests::test_rejects_express_when_feat
    booking is queued via fallback instead of failing outright.
 
 Covered by: `tests/test_gateway.py`, `tests/test_api.py::BookingEndpointTests`.
+
+## J5: Service selector visibility narrows by demo role in the quote UI
+
+1. Customer selects the `customer` demo role in the quote form.
+2. The Service selector only offers `STANDARD`; `EXPRESS` is not listed.
+3. Selecting `ops` or `admin` repopulates the Service selector with both
+   `STANDARD` and `EXPRESS`.
+4. This is a client-side UI affordance only -- it narrows what is *offered*,
+   independent of the server-side environment gate in J3. It also conflicts
+   with REQ-UI-1's original role-agnostic selector requirement; see that
+   entry in `docs/requirements.md`.
+
+Covered by: `ui/assets/form-validation.test.js` (role-to-visible-services
+mapping, Node's built-in test runner). The role-driven DOM repopulation in
+`ui/assets/app.js` is UI wiring and is not covered by an automated browser
+test in this demo -- verifying it end-to-end would require manual or
+browser-automation steps, which are out of scope here.

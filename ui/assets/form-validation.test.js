@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { escapeHtml, validateQuoteForm, DESTINATIONS, SERVICES } = require("./validation.js");
+const { escapeHtml, validateQuoteForm, visibleServicesForRole, DESTINATIONS, SERVICES } = require("./form-validation.js");
 
 test("escapeHtml escapes angle brackets and ampersands", () => {
   assert.equal(escapeHtml("<b>&</b>"), "&lt;b&gt;&amp;&lt;/b&gt;");
@@ -35,4 +35,17 @@ test("validateQuoteForm rejects unknown service", () => {
 test("DESTINATIONS and SERVICES enumerate the supported baseline values", () => {
   assert.deepEqual(DESTINATIONS, ["DOMESTIC", "REGIONAL", "INTERNATIONAL"]);
   assert.deepEqual(SERVICES, ["STANDARD", "EXPRESS"]);
+});
+
+test("visibleServicesForRole hides EXPRESS from the customer role in the UI selector", () => {
+  assert.deepEqual(visibleServicesForRole("customer"), ["STANDARD"]);
+});
+
+test("visibleServicesForRole shows all services for ops and admin roles", () => {
+  assert.deepEqual(visibleServicesForRole("ops"), ["STANDARD", "EXPRESS"]);
+  assert.deepEqual(visibleServicesForRole("admin"), ["STANDARD", "EXPRESS"]);
+});
+
+test("visibleServicesForRole falls back to STANDARD-only for an unknown role", () => {
+  assert.deepEqual(visibleServicesForRole("bogus"), ["STANDARD"]);
 });

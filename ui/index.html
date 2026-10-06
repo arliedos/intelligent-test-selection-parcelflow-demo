@@ -9,7 +9,7 @@
   <h1>ParcelFlow Demo: Get a Shipping Quote</h1>
   <p>Synthetic demo UI. Not a production storefront.</p>
 
-  <form id="quote-form" novalidate>
+  <form id="quote-form" novalidate aria-describedby="quote-errors">
     <div>
       <label for="role">Demo role</label>
       <select id="role" name="role">
@@ -17,30 +17,31 @@
         <option value="ops">ops</option>
         <option value="admin">admin</option>
       </select>
+      <p id="role-help">Service options below depend on the selected role.</p>
     </div>
 
     <div>
       <label for="weight_g">Weight (grams)</label>
-      <input id="weight_g" name="weight_g" type="number" min="1" step="1" required />
+      <input id="weight_g" name="weight_g" type="number" min="1" step="1" required aria-required="true" />
     </div>
 
     <div>
       <label for="destination">Destination</label>
-      <select id="destination" name="destination"></select>
+      <select id="destination" name="destination" required aria-required="true"></select>
     </div>
 
     <div>
       <label for="service">Service</label>
-      <select id="service" name="service"></select>
+      <select id="service" name="service" required aria-required="true" aria-describedby="role-help"></select>
     </div>
 
     <button type="submit">Get quote</button>
 
-    <ul id="quote-errors" aria-live="polite"></ul>
+    <ul id="quote-errors" role="alert" aria-live="assertive" hidden></ul>
     <div id="quote-result" aria-live="polite"></div>
   </form>
 
-  <script src="assets/validation.js"></script>
+  <script src="assets/form-validation.js"></script>
   <script src="assets/app.js"></script>
 </body>
 </html>

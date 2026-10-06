@@ -28,7 +28,18 @@ function validateQuoteForm({ weightG, destination, service }) {
   return { valid: errors.length === 0, errors };
 }
 
-const ParcelFlowValidation = { escapeHtml, validateQuoteForm, DESTINATIONS, SERVICES };
+// UI-level role visibility: EXPRESS is hidden from the customer role in the
+// quote form's service selector. This narrows what customers are offered;
+// it is not a substitute for the server's environment-driven EXPRESS gate
+// (see REQ-QUOTE-3), which still applies independently of role.
+function visibleServicesForRole(role) {
+  if (role === "ops" || role === "admin") {
+    return SERVICES.slice();
+  }
+  return SERVICES.filter((service) => service !== "EXPRESS");
+}
+
+const ParcelFlowValidation = { escapeHtml, validateQuoteForm, visibleServicesForRole, DESTINATIONS, SERVICES };
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = ParcelFlowValidation;

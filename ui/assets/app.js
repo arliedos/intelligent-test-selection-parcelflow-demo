@@ -1,10 +1,10 @@
 /* Minimal ParcelFlow demo UI wiring. Talks to the local API over fetch().
- * No framework; relies on validation.js for client-side checks and safe
+ * No framework; relies on form-validation.js for client-side checks and safe
  * rendering (escapeHtml) before inserting any server-derived text. */
 /* global document, fetch */
 
 (function () {
-  const { escapeHtml, validateQuoteForm, DESTINATIONS, SERVICES } = window.ParcelFlowValidation;
+  const { escapeHtml, validateQuoteForm, visibleServicesForRole, DESTINATIONS } = window.ParcelFlowValidation;
 
   function byId(id) {
     return document.getElementById(id);
@@ -12,6 +12,7 @@
 
   function renderErrors(container, errors) {
     container.innerHTML = "";
+    container.hidden = errors.length === 0;
     errors.forEach((message) => {
       const li = document.createElement("li");
       li.textContent = message; // textContent, not innerHTML: safe by construction
@@ -56,6 +57,7 @@
   }
 
   function populateSelect(selectEl, values) {
+    const previous = selectEl.value;
     selectEl.innerHTML = "";
     values.forEach((value) => {
       const opt = document.createElement("option");
@@ -63,11 +65,20 @@
       opt.textContent = value;
       selectEl.appendChild(opt);
     });
+    if (values.includes(previous)) {
+      selectEl.value = previous;
+    }
+  }
+
+  function refreshServicesForRole() {
+    const role = byId("role").value;
+    populateSelect(byId("service"), visibleServicesForRole(role));
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     populateSelect(byId("destination"), DESTINATIONS);
-    populateSelect(byId("service"), SERVICES);
+    refreshServicesForRole();
+    byId("role").addEventListener("change", refreshServicesForRole);
     byId("quote-form").addEventListener("submit", submitQuote);
   });
 })();
