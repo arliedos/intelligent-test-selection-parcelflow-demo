@@ -26,6 +26,13 @@ logger = logging.getLogger("parcelflow.app")
 DEFAULT_ROLE_HEADER = "X-Demo-Role"
 SIMULATE_OUTCOMES_HEADER = "X-Simulate-Gateway-Outcomes"
 
+DISPATCH_STATUS_BY_BOOKING_STATUS = {
+    "PENDING": "AWAITING_DISPATCH",
+    "CONFIRMED": "DISPATCHED",
+    "CONFIRMED_FALLBACK": "DISPATCHED",
+    "FAILED": "DISPATCH_FAILED",
+}
+
 _STATIC_CONTENT_TYPES = {
     ".html": "text/html; charset=utf-8",
     ".js": "text/javascript; charset=utf-8",
@@ -78,6 +85,9 @@ def make_handler(cfg: ParcelFlowConfig, rate_card: dict, conn, ui_dir: str | Non
                 if self.path == "/health":
                     self._send_json(200, {"status": "ok", "environment": cfg.environment})
                     return
+                if self.path.startswith("/api/bookings/") and self.path.endswith("/dispatch-status"):
+                    self._handle_dispatch_status()
+                    return
                 if self.path.startswith("/api/bookings/"):
                     self._handle_get_booking()
                     return
@@ -102,6 +112,23 @@ def make_handler(cfg: ParcelFlowConfig, rate_card: dict, conn, ui_dir: str | Non
                 self._send_error_json(404, "booking not found")
                 return
             self._send_json(200, dict(row))
+
+        def _handle_dispatch_status(self):
+            role = self.headers.get(DEFAULT_ROLE_HEADER)
+            auth.require_role(role, allowed_roles=cfg.dispatch_allowed_roles)
+            booking_id = self.path[len("/api/bookings/"):-len("/dispatch-status")]
+            with db_lock:
+                row = db.get_booking(conn, booking_id)
+            if row is None:
+                self._send_error_json(404, "booking not found")
+                return
+            self._send_json(
+                200,
+                {
+                    "booking_id": booking_id,
+                    "dispatch_status": DISPATCH_STATUS_BY_BOOKING_STATUS.get(row["status"], "UNKNOWN"),
+                },
+            )
 
         def _serve_static(self) -> bool:
             request_path = "/index.html" if self.path == "/" else self.path

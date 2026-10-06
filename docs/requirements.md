@@ -12,6 +12,7 @@
 | REQ-VALID-2 | Unknown fields in request bodies are rejected. | Strict shape validation. |
 | REQ-CONFIG-1 | Configuration documents are validated for known environment name, known role names, and non-negative integer gateway timeout/retry values. | `config.py` |
 | REQ-SEC-1 | Secret reference values must never appear in error messages or logs. | Enforced by `config.py` validation errors and `app.py` error handlers. |
+| REQ-DISPATCH-1 | `GET /api/bookings/{bookingId}/dispatch-status` derives a carrier dispatch status from the booking's current status and is restricted to `roles.dispatch_allowed_roles`. | `app.py`; verified externally only (no mapped entry in `testcatalogue/catalogue.json`). |
 
 These are baseline, non-exhaustive requirements -- sufficient to exercise
 change-impact analysis across the scenario branches, not a claim of full

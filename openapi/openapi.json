@@ -112,6 +112,33 @@
           "404": { "$ref": "#/components/responses/NotFound" }
         }
       }
+    },
+    "/api/bookings/{bookingId}/dispatch-status": {
+      "get": {
+        "operationId": "getDispatchStatus",
+        "summary": "Fetch the carrier dispatch status derived from a booking's current status",
+        "parameters": [
+          { "$ref": "#/components/parameters/DemoRoleHeader" },
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dispatch status derived from the booking record",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DispatchStatusResponse" }
+              }
+            }
+          },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
     }
   },
   "components": {
@@ -179,6 +206,17 @@
           "status": { "type": "string", "enum": ["PENDING", "CONFIRMED", "CONFIRMED_FALLBACK", "FAILED"] },
           "attempts": { "type": "integer" },
           "carrier_reference": { "type": ["string", "null"] }
+        }
+      },
+      "DispatchStatusResponse": {
+        "type": "object",
+        "required": ["booking_id", "dispatch_status"],
+        "properties": {
+          "booking_id": { "type": "string" },
+          "dispatch_status": {
+            "type": "string",
+            "enum": ["AWAITING_DISPATCH", "DISPATCHED", "DISPATCH_FAILED", "UNKNOWN"]
+          }
         }
       },
       "ErrorResponse": {
