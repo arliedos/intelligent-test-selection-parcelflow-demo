@@ -1,0 +1,18 @@
+# Representative local-compose topology for the ParcelFlow demo.
+# Static deployment evidence only: not built, started, or validated by this
+# repository's test command, and no network/cloud calls are made from it.
+services:
+  parcelflow-api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    environment:
+      PARCELFLOW_ENVIRONMENT: SIT
+    ports:
+      - "8102:8102"
+    networks:
+      - parcelflow-demo-net
+
+networks:
+  parcelflow-demo-net:
+    driver: bridge

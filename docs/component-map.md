@@ -9,7 +9,8 @@
 | Pricing | `src/parcelflow/pricing.py` | models, reference-data/rate_card.json |
 | Gateway simulator | `src/parcelflow/gateway.py` | models |
 | Role auth | `src/parcelflow/auth.py` | models |
-| Persistence | `src/parcelflow/db.py` | stdlib `sqlite3` |
+| Persistence | `src/parcelflow/db.py` | stdlib `sqlite3`, migrations |
+| Migrations | `src/parcelflow/migrations.py` | db (operates on connections produced by `db.connect`) |
 | Request validation | `src/parcelflow/validation.py` | models |
 | Contract checker | `src/parcelflow/contract_check.py` | (none -- stdlib `json` only) |
 | Shared models | `src/parcelflow/models.py` | (none) |
