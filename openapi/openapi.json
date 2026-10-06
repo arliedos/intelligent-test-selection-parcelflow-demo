@@ -152,14 +152,15 @@
       },
       "QuoteResponseV1": {
         "type": "object",
-        "required": ["quote_id", "amount_cents", "currency", "destination", "service", "weight_g"],
+        "required": ["quote_id", "amount_cents", "currency", "destination", "service", "weight_g", "estimated_delivery_days"],
         "properties": {
           "quote_id": { "type": "string" },
           "amount_cents": { "type": "integer", "description": "Integer minor-unit currency amount; never a float." },
           "currency": { "type": "string", "enum": ["USD"] },
           "destination": { "type": "string" },
           "service": { "type": "string" },
-          "weight_g": { "type": "integer" }
+          "weight_g": { "type": "integer" },
+          "estimated_delivery_days": { "type": "integer", "description": "Estimated number of business days until delivery for the selected service." }
         }
       },
       "BookingRequest": {
