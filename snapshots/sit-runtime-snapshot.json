@@ -2,16 +2,16 @@
   "_provenance": {
     "type": "synthetic capture",
     "note": "This file is fabricated fixture data for demo purposes. It does NOT represent an actual live service observation, and no network call was performed to produce it.",
-    "captured_at": "2026-09-01T00:00:00Z",
+    "captured_at": "2026-10-05T00:00:00Z",
     "environment": "SIT"
   },
   "observed": {
     "environment": "SIT",
     "gateway_base_url": "http://carrier-gateway.sit.internal.invalid",
     "gateway_timeout_ms": 2000,
-    "gateway_retry_count": 2,
+    "gateway_retry_count": 3,
     "feature_flags": {
-      "express_service_enabled": false
+      "express_service_enabled": true
     }
   }
 }
