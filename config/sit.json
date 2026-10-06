@@ -1,25 +1,25 @@
 {
   "environment": "SIT",
   "api": {
-    "base_url": "http://parcelflow.sit.internal.invalid",
+    "base_url": "http://parcelflow.sit-routing.internal.invalid",
     "port": 8102
   },
   "gateway": {
-    "base_url": "http://carrier-gateway.sit.internal.invalid",
-    "timeout_ms": 2000,
-    "retry_count": 2,
+    "base_url": "http://carrier-gateway-v2.sit.internal.invalid",
+    "timeout_ms": 5000,
+    "retry_count": 4,
     "fallback_enabled": true,
     "simulation_enabled": true
   },
   "feature_flags": {
-    "express_service_enabled": false
+    "express_service_enabled": true
   },
   "roles": {
-    "quote_allowed_roles": ["customer", "ops", "admin"],
+    "quote_allowed_roles": ["ops", "admin"],
     "booking_allowed_roles": ["customer", "ops", "admin"],
     "dispatch_allowed_roles": ["ops", "admin"]
   },
   "secrets": {
-    "gateway_api_key_ref": "secret://parcelflow/sit/gateway-api-key"
+    "gateway_api_key_ref": "secret://parcelflow/sit/gateway-api-key-v2"
   }
 }
