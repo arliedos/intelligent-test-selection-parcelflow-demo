@@ -20,5 +20,15 @@ class OperationsClient(StorefrontClient):
     def __init__(self, base_url: str, role: str = DEFAULT_ROLE):
         super().__init__(base_url, role=role)
 
+    def requote_v2(self, *, weight_g: int, destination: str, service: str, insured_value_cents: int) -> dict:
+        """Ops-side re-quote against the v2 endpoint with insured value."""
+        return self._call(
+            "POST", "/api/v2/quotes",
+            {
+                "weight_g": weight_g, "destination": destination, "service": service,
+                "insured_value_cents": insured_value_cents,
+            },
+        )
+
 
 __all__ = ["OperationsClient", "StorefrontApiError"]

@@ -126,6 +126,8 @@ def make_handler(cfg: ParcelFlowConfig, rate_card: dict, conn, ui_dir: str | Non
             try:
                 if self.path == "/api/quotes":
                     self._handle_quote()
+                elif self.path == "/api/v2/quotes":
+                    self._handle_quote_v2()
                 elif self.path == "/api/bookings":
                     self._handle_booking()
                 else:
@@ -169,6 +171,42 @@ def make_handler(cfg: ParcelFlowConfig, rate_card: dict, conn, ui_dir: str | Non
                     "destination": parsed["destination"],
                     "service": parsed["service"],
                     "weight_g": parsed["weight_g"],
+                },
+            )
+
+        def _handle_quote_v2(self):
+            role = self.headers.get(DEFAULT_ROLE_HEADER)
+            auth.require_role(role, allowed_roles=cfg.quote_allowed_roles)
+            body = self._read_body()
+            parsed = validation.parse_quote_request_v2(body)
+            base_amount_cents = pricing.compute_quote_cents(
+                weight_g=parsed["weight_g"],
+                destination=parsed["destination"],
+                service=parsed["service"],
+                rate_card=rate_card,
+                express_enabled=cfg.express_service_enabled,
+            )
+            insurance_fee_cents = pricing.compute_insurance_fee_cents(parsed["insured_value_cents"])
+            amount_cents = base_amount_cents + insurance_fee_cents
+            with db_lock:
+                quote_id = db.insert_quote(
+                    conn,
+                    weight_g=parsed["weight_g"],
+                    destination=parsed["destination"],
+                    service=parsed["service"],
+                    amount_cents=amount_cents,
+                )
+            self._send_json(
+                200,
+                {
+                    "quote_id": quote_id,
+                    "amount_cents": amount_cents,
+                    "currency": "USD",
+                    "destination": parsed["destination"],
+                    "service": parsed["service"],
+                    "weight_g": parsed["weight_g"],
+                    "insured_value_cents": parsed["insured_value_cents"],
+                    "rate_card_version": rate_card.get("version"),
                 },
             )
 

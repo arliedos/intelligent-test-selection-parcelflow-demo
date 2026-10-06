@@ -12,6 +12,7 @@ from parcelflow.models import InvalidBookingRequest, InvalidQuoteRequest
 MAX_BODY_BYTES = 16_384
 
 QUOTE_REQUIRED_FIELDS = {"weight_g", "destination", "service"}
+QUOTE_V2_REQUIRED_FIELDS = {"weight_g", "destination", "service", "insured_value_cents"}
 BOOKING_REQUIRED_FIELDS = {"quote_id"}
 
 
@@ -35,6 +36,20 @@ def parse_quote_request(body: bytes) -> dict:
     unknown = doc.keys() - QUOTE_REQUIRED_FIELDS
     if unknown:
         raise InvalidQuoteRequest(f"unknown field(s): {sorted(unknown)}")
+    return doc
+
+
+def parse_quote_request_v2(body: bytes) -> dict:
+    doc = _parse_json_object(body, InvalidQuoteRequest)
+    missing = QUOTE_V2_REQUIRED_FIELDS - doc.keys()
+    if missing:
+        raise InvalidQuoteRequest(f"missing required field(s): {sorted(missing)}")
+    unknown = doc.keys() - QUOTE_V2_REQUIRED_FIELDS
+    if unknown:
+        raise InvalidQuoteRequest(f"unknown field(s): {sorted(unknown)}")
+    insured_value = doc["insured_value_cents"]
+    if not isinstance(insured_value, int) or isinstance(insured_value, bool) or insured_value < 0:
+        raise InvalidQuoteRequest("insured_value_cents must be a non-negative integer")
     return doc
 
 

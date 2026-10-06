@@ -45,6 +45,15 @@ class StorefrontClient:
             "POST", "/api/quotes", {"weight_g": weight_g, "destination": destination, "service": service},
         )
 
+    def request_quote_v2(self, *, weight_g: int, destination: str, service: str, insured_value_cents: int) -> dict:
+        return self._call(
+            "POST", "/api/v2/quotes",
+            {
+                "weight_g": weight_g, "destination": destination, "service": service,
+                "insured_value_cents": insured_value_cents,
+            },
+        )
+
     def create_booking(self, quote_id: str, simulate_outcomes: list[str] | None = None) -> dict:
         headers = {}
         if simulate_outcomes:

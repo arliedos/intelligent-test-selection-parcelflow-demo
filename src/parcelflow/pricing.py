@@ -27,3 +27,10 @@ def compute_quote_cents(*, weight_g, destination: str, service: str, rate_card: 
     base_cents = rate["base_cents"]
     per_gram_cents = rate["per_gram_cents"]
     return base_cents + per_gram_cents * weight_g
+
+
+def compute_insurance_fee_cents(insured_value_cents: int) -> int:
+    """1% insurance fee, floored to the nearest integer cent. No floats."""
+    if not isinstance(insured_value_cents, int) or isinstance(insured_value_cents, bool) or insured_value_cents < 0:
+        raise InvalidQuoteRequest("insured_value_cents must be a non-negative integer")
+    return insured_value_cents // 100

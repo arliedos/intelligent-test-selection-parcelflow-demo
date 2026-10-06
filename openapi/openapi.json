@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "ParcelFlow Demo API",
-    "version": "1.0.0",
-    "description": "Synthetic parcel shipping demo API (quote, booking, health). Not a production service."
+    "version": "2.0.0",
+    "description": "Synthetic parcel shipping demo API (quote v1/v2, booking, health). Not a production service. v1 behavior is unchanged and remains documented/tested alongside the new v2 quote endpoint."
   },
   "servers": [
     { "url": "http://parcelflow.st.internal.invalid", "description": "ST" },
@@ -48,6 +48,35 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/QuoteResponseV1" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/api/v2/quotes": {
+      "post": {
+        "operationId": "createQuoteV2",
+        "summary": "Create a shipping quote with insurance (v2)",
+        "parameters": [
+          { "$ref": "#/components/parameters/DemoRoleHeader" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QuoteRequestV2" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Quote created (v2 returns 200, not 201, and includes insurance + rate card version)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QuoteResponseV2" }
               }
             }
           },
@@ -160,6 +189,31 @@
           "destination": { "type": "string" },
           "service": { "type": "string" },
           "weight_g": { "type": "integer" }
+        }
+      },
+      "QuoteRequestV2": {
+        "type": "object",
+        "required": ["weight_g", "destination", "service", "insured_value_cents"],
+        "additionalProperties": false,
+        "properties": {
+          "weight_g": { "type": "integer", "minimum": 1, "maximum": 50000 },
+          "destination": { "type": "string", "enum": ["DOMESTIC", "REGIONAL", "INTERNATIONAL"] },
+          "service": { "type": "string", "enum": ["STANDARD", "EXPRESS"] },
+          "insured_value_cents": { "type": "integer", "minimum": 0, "description": "New in v2: required, non-negative integer." }
+        }
+      },
+      "QuoteResponseV2": {
+        "type": "object",
+        "required": ["quote_id", "amount_cents", "currency", "destination", "service", "weight_g", "insured_value_cents", "rate_card_version"],
+        "properties": {
+          "quote_id": { "type": "string" },
+          "amount_cents": { "type": "integer", "description": "Base quote amount plus a 1% (floored) insurance fee." },
+          "currency": { "type": "string", "enum": ["USD"] },
+          "destination": { "type": "string" },
+          "service": { "type": "string" },
+          "weight_g": { "type": "integer" },
+          "insured_value_cents": { "type": "integer" },
+          "rate_card_version": { "type": "integer", "description": "New in v2." }
         }
       },
       "BookingRequest": {
