@@ -1,0 +1,113 @@
+{
+  "info": {
+    "name": "ParcelFlow Demo API",
+    "description": "Synthetic Postman collection for the ParcelFlow demo baseline API. Run against a locally started instance (see docs/architecture.md). All requests and assertions in this file are synthetic fixture content authored for this demo repository, not captured from any real system.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "_provenance": {
+    "authorship": "synthetic",
+    "note": "Hand-authored synthetic fixture for the ParcelFlow demo baseline. Not exported from a live Postman workspace and not evidence of any real deployment."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8101" },
+    { "key": "role", "value": "customer" }
+  ],
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('response reports ok status', function () { pm.expect(pm.response.json().status).to.eql('ok'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create quote (domestic standard)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Demo-Role", "value": "{{role}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": "{{baseUrl}}/api/quotes",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"weight_g\": 500, \"destination\": \"DOMESTIC\", \"service\": \"STANDARD\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 201', function () { pm.response.to.have.status(201); });",
+              "pm.test('amount_cents is an integer', function () { pm.expect(pm.response.json().amount_cents).to.be.a('number'); });",
+              "pm.test('quote_id is present', function () { pm.expect(pm.response.json().quote_id).to.be.a('string'); })"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create booking",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Demo-Role", "value": "{{role}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": "{{baseUrl}}/api/bookings",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"quote_id\": \"REPLACE_WITH_QUOTE_ID\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 201', function () { pm.response.to.have.status(201); });",
+              "pm.test('booking_id is present', function () { pm.expect(pm.response.json().booking_id).to.be.a('string'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get booking by id",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "X-Demo-Role", "value": "{{role}}" }
+        ],
+        "url": "{{baseUrl}}/api/bookings/REPLACE_WITH_BOOKING_ID"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('status field is present', function () { pm.expect(pm.response.json().status).to.be.a('string'); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

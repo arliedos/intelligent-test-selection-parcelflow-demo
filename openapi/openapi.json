@@ -1,0 +1,211 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ParcelFlow Demo API",
+    "version": "1.0.0",
+    "description": "Synthetic parcel shipping demo API (quote, booking, health). Not a production service."
+  },
+  "servers": [
+    { "url": "http://parcelflow.st.internal.invalid", "description": "ST" },
+    { "url": "http://parcelflow.sit.internal.invalid", "description": "SIT" },
+    { "url": "http://parcelflow.uat.internal.invalid", "description": "UAT" }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "Liveness/environment check",
+        "responses": {
+          "200": {
+            "description": "Service is up",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HealthResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quotes": {
+      "post": {
+        "operationId": "createQuote",
+        "summary": "Create a shipping quote",
+        "parameters": [
+          { "$ref": "#/components/parameters/DemoRoleHeader" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QuoteRequestV1" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Quote created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QuoteResponseV1" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/api/bookings": {
+      "post": {
+        "operationId": "createBooking",
+        "summary": "Confirm a booking against a quote via the carrier gateway",
+        "parameters": [
+          { "$ref": "#/components/parameters/DemoRoleHeader" },
+          { "$ref": "#/components/parameters/SimulateGatewayOutcomesHeader" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BookingRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Booking confirmed (directly or via fallback)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BookingResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "502": { "$ref": "#/components/responses/GatewayUnavailable" }
+        }
+      }
+    },
+    "/api/bookings/{bookingId}": {
+      "get": {
+        "operationId": "getBooking",
+        "summary": "Fetch a persisted booking by id",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Booking found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BookingResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "DemoRoleHeader": {
+        "name": "X-Demo-Role",
+        "in": "header",
+        "required": true,
+        "description": "Explicit local demo role simulation only -- NOT production auth.",
+        "schema": { "type": "string", "enum": ["customer", "ops", "admin"] }
+      },
+      "SimulateGatewayOutcomesHeader": {
+        "name": "X-Simulate-Gateway-Outcomes",
+        "in": "header",
+        "required": false,
+        "description": "Test-only explicit injection of comma-separated simulated carrier gateway outcomes (success|timeout|decline). Honored only when gateway.simulation_enabled is true for the active environment.",
+        "schema": { "type": "string" }
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "required": ["status", "environment"],
+        "properties": {
+          "status": { "type": "string" },
+          "environment": { "type": "string", "enum": ["ST", "SIT", "UAT"] }
+        }
+      },
+      "QuoteRequestV1": {
+        "type": "object",
+        "required": ["weight_g", "destination", "service"],
+        "additionalProperties": false,
+        "properties": {
+          "weight_g": { "type": "integer", "minimum": 1, "maximum": 50000 },
+          "destination": { "type": "string", "enum": ["DOMESTIC", "REGIONAL", "INTERNATIONAL"] },
+          "service": { "type": "string", "enum": ["STANDARD", "EXPRESS"] }
+        }
+      },
+      "QuoteResponseV1": {
+        "type": "object",
+        "required": ["quote_id", "amount_cents", "currency", "destination", "service", "weight_g"],
+        "properties": {
+          "quote_id": { "type": "string" },
+          "amount_cents": { "type": "integer", "description": "Integer minor-unit currency amount; never a float." },
+          "currency": { "type": "string", "enum": ["USD"] },
+          "destination": { "type": "string" },
+          "service": { "type": "string" },
+          "weight_g": { "type": "integer" }
+        }
+      },
+      "BookingRequest": {
+        "type": "object",
+        "required": ["quote_id"],
+        "additionalProperties": false,
+        "properties": {
+          "quote_id": { "type": "string" }
+        }
+      },
+      "BookingResponse": {
+        "type": "object",
+        "required": ["booking_id", "quote_id", "status", "attempts"],
+        "properties": {
+          "booking_id": { "type": "string" },
+          "quote_id": { "type": "string" },
+          "status": { "type": "string", "enum": ["PENDING", "CONFIRMED", "CONFIRMED_FALLBACK", "FAILED"] },
+          "attempts": { "type": "integer" },
+          "carrier_reference": { "type": ["string", "null"] }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": { "type": "string" }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Validation failure",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      },
+      "Forbidden": {
+        "description": "Role not permitted for this action",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      },
+      "GatewayUnavailable": {
+        "description": "Carrier gateway retries exhausted with no fallback available",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      }
+    }
+  }
+}

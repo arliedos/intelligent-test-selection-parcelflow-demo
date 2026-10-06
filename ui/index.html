@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ParcelFlow Demo</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <h1>ParcelFlow Demo: Get a Shipping Quote</h1>
+  <p>Synthetic demo UI. Not a production storefront.</p>
+
+  <form id="quote-form" novalidate>
+    <div>
+      <label for="role">Demo role</label>
+      <select id="role" name="role">
+        <option value="customer">customer</option>
+        <option value="ops">ops</option>
+        <option value="admin">admin</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="weight_g">Weight (grams)</label>
+      <input id="weight_g" name="weight_g" type="number" min="1" step="1" required />
+    </div>
+
+    <div>
+      <label for="destination">Destination</label>
+      <select id="destination" name="destination"></select>
+    </div>
+
+    <div>
+      <label for="service">Service</label>
+      <select id="service" name="service"></select>
+    </div>
+
+    <button type="submit">Get quote</button>
+
+    <ul id="quote-errors" aria-live="polite"></ul>
+    <div id="quote-result" aria-live="polite"></div>
+  </form>
+
+  <script src="assets/validation.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

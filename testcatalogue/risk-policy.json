@@ -1,0 +1,50 @@
+{
+  "_provenance": {
+    "type": "synthetic generic policy",
+    "note": "This is a deterministic, generic policy fixture for the ParcelFlow demo. It is an input an agent may reason over -- it is not itself an evaluation answer, and it does not select tests for any scenario."
+  },
+  "schema_version": 1,
+  "test_cycles": {
+    "ST": { "description": "System test: run on every merge candidate, fast feedback.", "max_budget_minutes": 15 },
+    "SIT": { "description": "System integration test: cross-component and cross-consumer checks.", "max_budget_minutes": 45 },
+    "UAT": { "description": "User acceptance test: includes manual steps; run before release sign-off.", "max_budget_minutes": 240 },
+    "REGRESSION": { "description": "Full regression sweep: run nightly and before release branch cut.", "max_budget_minutes": 120 }
+  },
+  "business_criticality_levels": ["low", "medium", "high"],
+  "mandatory_packs": {
+    "smoke-pack": {
+      "description": "Minimal liveness checks. Must run in every cycle regardless of detected change scope.",
+      "enforcement": "always_include"
+    },
+    "security-pack": {
+      "description": "Role-authorization and secret-handling checks. Must run whenever any API, config, or auth-related file changes.",
+      "enforcement": "always_include"
+    },
+    "financial-accuracy-pack": {
+      "description": "Monetary arithmetic checks (integer-cents correctness). Must run whenever pricing, rate-card, or currency-adjacent code changes.",
+      "enforcement": "always_include"
+    }
+  },
+  "risk_factors": [
+    { "factor": "touches_monetary_arithmetic", "weight": "high" },
+    { "factor": "touches_role_authorization", "weight": "high" },
+    { "factor": "touches_gateway_retry_policy", "weight": "medium" },
+    { "factor": "touches_persistence_schema", "weight": "medium" },
+    { "factor": "touches_contract_document_only", "weight": "medium" },
+    { "factor": "touches_ui_only", "weight": "low" },
+    { "factor": "touches_docs_only", "weight": "low" }
+  ],
+  "deterministic_thresholds": {
+    "minimum_tests_per_touched_component": 1,
+    "minimum_mandatory_pack_tests_always_included": "all tests with a non-empty mandatory_pack_membership relevant to the pack(s) triggered",
+    "manual_step_required_for_cycle": ["UAT"]
+  },
+  "infeasibility_handling": {
+    "rule": "If the available time budget cannot accommodate all mandatory-pack tests for the applicable cycle, do not silently drop them. Flag the budget as infeasible and report which mandatory tests could not be scheduled.",
+    "mandatory_tests_are_never_silently_dropped": true
+  },
+  "approval_and_autonomy": {
+    "reviewer_approval_required_before_merge": true,
+    "agent_autonomy": "none -- this policy is an input to human or agent reasoning about test selection; it does not grant authority to skip reviewer approval or to publish a selection as final without review."
+  }
+}

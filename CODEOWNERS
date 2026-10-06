@@ -1,0 +1,21 @@
+# Synthetic owner metadata for the ParcelFlow demo repository.
+# These are generic synthetic team labels -- not real GitHub teams/orgs.
+
+/src/parcelflow/pricing.py        @parcelflow-synthetic/pricing-team
+/src/parcelflow/gateway.py        @parcelflow-synthetic/platform-team
+/src/parcelflow/auth.py           @parcelflow-synthetic/platform-team
+/src/parcelflow/db.py             @parcelflow-synthetic/platform-team
+/src/parcelflow/app.py            @parcelflow-synthetic/platform-team
+/src/parcelflow/config.py         @parcelflow-synthetic/platform-team
+/config/                          @parcelflow-synthetic/release-team
+/openapi/                         @parcelflow-synthetic/api-team
+/consumers/                       @parcelflow-synthetic/integrations-team
+/ui/                               @parcelflow-synthetic/storefront-team
+/testcatalogue/                   @parcelflow-synthetic/quality-team
+/docs/                            @parcelflow-synthetic/quality-team
+/src/parcelflow/models.py         @parcelflow-synthetic/platform-team
+/src/parcelflow/validation.py     @parcelflow-synthetic/platform-team
+/src/parcelflow/contract_check.py @parcelflow-synthetic/api-team
+/snapshots/                       @parcelflow-synthetic/release-team
+/reference-data/                  @parcelflow-synthetic/pricing-team
+/scripts/                         @parcelflow-synthetic/quality-team

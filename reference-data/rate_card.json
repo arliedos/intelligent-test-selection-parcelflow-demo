@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "currency": "USD",
+  "rates": {
+    "DOMESTIC": {
+      "STANDARD": { "base_cents": 500, "per_gram_cents": 1 },
+      "EXPRESS": { "base_cents": 1200, "per_gram_cents": 2 }
+    },
+    "REGIONAL": {
+      "STANDARD": { "base_cents": 900, "per_gram_cents": 2 },
+      "EXPRESS": { "base_cents": 1800, "per_gram_cents": 3 }
+    },
+    "INTERNATIONAL": {
+      "STANDARD": { "base_cents": 1500, "per_gram_cents": 3 },
+      "EXPRESS": { "base_cents": 2600, "per_gram_cents": 4 }
+    }
+  }
+}

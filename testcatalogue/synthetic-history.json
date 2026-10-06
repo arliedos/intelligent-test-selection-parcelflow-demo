@@ -1,0 +1,134 @@
+{
+  "_provenance": {
+    "type": "synthetic fixture",
+    "note": "This file is fabricated historical metadata for the ParcelFlow demo. It is explicitly NOT a record of real CI execution -- no pipeline actually produced these run statuses, durations, or flake rates."
+  },
+  "schema_version": 1,
+  "history": {
+    "TC-001": {
+      "last_run_at": "2025-04-02T09:00:00Z",
+      "duration_ms_last_observed": 180,
+      "historically_flaky": false,
+      "flake_rate_pct": 0,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": [],
+      "run_status_trend": ["pass", "pass", "pass", "pass"],
+      "notes": "Stale: last recorded run predates several unrelated app.py changes; treat as not recently re-verified."
+    },
+    "TC-002": {
+      "last_run_at": "2026-09-18T14:12:00Z",
+      "duration_ms_last_observed": null,
+      "historically_flaky": false,
+      "flake_rate_pct": 0,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": ["TC-015"],
+      "run_status_trend": ["pass", "pass", "pass"],
+      "notes": "Missing duration: last run's timing was not captured by the (synthetic) historical pipeline."
+    },
+    "TC-004": {
+      "last_run_at": "2026-09-18T14:12:30Z",
+      "duration_ms_last_observed": 95,
+      "historically_flaky": false,
+      "flake_rate_pct": 0,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": [],
+      "run_status_trend": ["pass", "pass", "pass", "pass", "pass"]
+    },
+    "TC-009": {
+      "last_run_at": "2026-09-19T03:40:11Z",
+      "duration_ms_last_observed": 140,
+      "historically_flaky": true,
+      "flake_rate_pct": 18,
+      "prior_failure_linkage": ["TC-010", "TC-018"],
+      "overlapping_coverage_with": ["TC-018"],
+      "run_status_trend": ["pass", "fail", "pass", "pass", "fail", "pass"],
+      "notes": "Historically flaky: synthetic timing-sensitive retry-count edge case; failures synthetically correlated with TC-010 and TC-018 in the same run."
+    },
+    "TC-010": {
+      "last_run_at": "2026-09-19T03:40:12Z",
+      "duration_ms_last_observed": 110,
+      "historically_flaky": false,
+      "flake_rate_pct": 2,
+      "prior_failure_linkage": ["TC-009"],
+      "overlapping_coverage_with": [],
+      "run_status_trend": ["pass", "pass", "fail", "pass"]
+    },
+    "TC-011": {
+      "last_run_at": "2026-09-19T03:40:13Z",
+      "duration_ms_last_observed": 130,
+      "historically_flaky": false,
+      "flake_rate_pct": 0,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": ["TC-019"],
+      "run_status_trend": ["pass", "pass", "pass"],
+      "notes": "Overlapping coverage: TC-019 exercises the same fallback behavior at the HTTP layer rather than the unit layer."
+    },
+    "TC-012": {
+      "last_run_at": "2025-01-20T10:00:00Z",
+      "duration_ms_last_observed": null,
+      "historically_flaky": false,
+      "flake_rate_pct": 0,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": ["TC-020"],
+      "run_status_trend": ["pass", "pass"],
+      "notes": "Stale and missing duration: oldest recorded run in this history file, predating the metadata review noted in the catalogue entry."
+    },
+    "TC-018": {
+      "last_run_at": "2026-09-19T03:41:00Z",
+      "duration_ms_last_observed": 410,
+      "historically_flaky": true,
+      "flake_rate_pct": 9,
+      "prior_failure_linkage": ["TC-009"],
+      "overlapping_coverage_with": ["TC-009", "TC-012"],
+      "run_status_trend": ["pass", "pass", "fail", "pass", "pass"],
+      "notes": "Overlapping coverage with TC-009 (same retry semantics, different layer) and TC-012 (same persistence round trip, different layer)."
+    },
+    "TC-019": {
+      "last_run_at": "2026-09-19T03:41:05Z",
+      "duration_ms_last_observed": 430,
+      "historically_flaky": false,
+      "flake_rate_pct": 1,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": ["TC-011"],
+      "run_status_trend": ["pass", "pass", "pass", "pass"]
+    },
+    "TC-020": {
+      "last_run_at": "2026-09-19T03:41:10Z",
+      "duration_ms_last_observed": 390,
+      "historically_flaky": false,
+      "flake_rate_pct": 0,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": ["TC-012"],
+      "run_status_trend": ["pass", "pass", "pass"]
+    },
+    "TC-021": {
+      "last_run_at": "2026-09-19T03:42:00Z",
+      "duration_ms_last_observed": 220,
+      "historically_flaky": true,
+      "flake_rate_pct": 6,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": [],
+      "run_status_trend": ["pass", "fail", "pass", "pass"],
+      "notes": "Occasional synthetic flakiness attributed to filesystem timing under load; not reproduced on re-run in this fixture history."
+    },
+    "TC-024": {
+      "last_run_at": "2026-09-19T03:43:00Z",
+      "duration_ms_last_observed": 260,
+      "historically_flaky": false,
+      "flake_rate_pct": 0,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": ["TC-015"],
+      "run_status_trend": ["pass", "pass", "pass"]
+    },
+    "TC-026": {
+      "last_run_at": "2026-09-01T00:05:00Z",
+      "duration_ms_last_observed": 40,
+      "historically_flaky": false,
+      "flake_rate_pct": 0,
+      "prior_failure_linkage": [],
+      "overlapping_coverage_with": [],
+      "run_status_trend": ["pass"],
+      "notes": "Only run once in this synthetic history, immediately after the snapshot fixture was authored."
+    }
+  }
+}

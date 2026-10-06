@@ -1,0 +1,32 @@
+name: ParcelFlow Demo CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run the documented test command
+        run: python scripts/run_tests.py
+
+      - name: Upload real test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parcelflow-demo-test-reports
+          path: reports/
